@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+    <header>
+        <title>base64 encode & decode</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.3/gh-fork-ribbon.min.css" />
+        <style>
+            .decode-message, .encode-message{
+                height: 200px;
+                width: 100%;
+                display: block;
+            }
+            .btn-encode, .btn-decode{
+                width: 49%;
+            }
+            .error-msg{
+                display: block;
+                color: red;
+                visibility:hidden;
+            }
+            .title{
+                text-align: center;
+            }
+            ::placeholder{
+                text-align: center;
+                padding-top: 7em;
+            }
+            .footer{
+                text-align: center;
+                
+            }
+            .github-fork-ribbon:before {
+                background-color: rgba(145, 180, 147, 0.5);
+            }
+            @media screen and (max-width: 600px) {
+                .decode-message, .encode-message{
+                    height: 350px;
+                    width: 100%;
+                }
+                ::placeholder{
+                    padding-top: 12em;
+                }
+            }
+        </style>
+    </header>
+    <body>
+        <div class="title"><H1>Base64 encode & decode (UTF8 default)</H1></div>
+        <textarea class = "decode-message" placeholder="Enter your message need to be encoded"></textarea>
+        <button class = "btn-encode" onclick="encode()">ENCODE ↓</button>
+        <button class = "btn-decode" onclick="decode()">DECODE ↑</button>
+        <textarea class = "encode-message" placeholder="Enter your message need to be decoded"></textarea>
+        <div class="error-msg"><b>* Your encoded message is invalid! Please check it again.</b></div>
+        <footer class="footer">🔒 <span style="text-decoration-line: underline; text-decoration-style: wavy; filter: blur(1px);">Pricacy</span></footer>
+        <a class="github-fork-ribbon" href="https://github.com/bgzo/" data-ribbon="Star Me on GitHub" title="Star Me on GitHub">Fork me on GitHub</a>
+</body>
+    <script>
+        function init(){
+            document.getElementsByClassName("error-msg")[0].style.visibility="hidden";
+        }
+        function encode(){
+            init();
+            var originMsg = document.getElementsByClassName("decode-message")[0].value;
+
+            try{
+                var encodeMsg = btoa(originMsg);
+            }catch(error){
+                if(error instanceof DOMException){
+                    console.log(error);
+                    console.log("The string to be encoded contains characters outside of the Latin1 range");
+                    var encodeMsg = btoa(unescape(encodeURIComponent(originMsg)));
+                }
+            }
+            document.getElementsByClassName('encode-message')[0].value = encodeMsg;
+        }
+        function decode(){
+            init();
+            var encodedMsg = document.getElementsByClassName("encode-message")[0].value;
+            try{
+                var targetMsg = decodeURIComponent(escape(atob(encodedMsg)));
+            }catch(error){
+                if(error instanceof DOMException){
+                    console.log("The string to be decoded is not correctly encoded.");
+                }else if (error instanceof URIError){
+                    console.log("uri malformed.");
+                }else{
+                    console.log(error);
+                }
+                document.getElementsByClassName("error-msg")[0].style.visibility="visible";
+                document.getElementsByClassName("encode-message")[0].focus();
+                var targetMsg = "";
+            }
+            document.getElementsByClassName('decode-message')[0].value = targetMsg;
+        }
+    </script>
+</html>
